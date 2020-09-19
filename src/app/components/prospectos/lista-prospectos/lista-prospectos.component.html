@@ -1,0 +1,628 @@
+
+<header>
+    <nav class="navbar navbar-light head-nav">
+        <h2>GENERALES</h2>
+    </nav>
+    </header>
+<form [formGroup]="formQuotation" (ngSubmit)="onSubmit()">
+    <!-- ROW 2 -->
+    <div class="row">
+        <div class="col-9 form-custom" [ngClass]="{'error-alert': formQuotation.get('group').errors &&
+     (formQuotation.get('group').touched || formQuotation.get('group').dirty) }">
+            <div class="form-group">
+                <label for="group">GRUPO</label>
+                <input type="text" id="group" formControlName="group" value="" class="form-control">
+                <span *ngIf="formQuotation.get('group').errors &&
+        (formQuotation.get('group').touched || formQuotation.get('group').dirty)">
+                    El grupo es requerido
+                </span>
+            </div>
+        </div>
+        <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('giro').errors &&
+                (formQuotation.get('giro').touched || formQuotation.get('giro').dirty) }">
+                <div class="form-group">    
+                    <label for="giro">GIRO</label>    
+                    <div class="select-upper">    
+                        <select id="giro" class="form-control" formControlName="giro" required
+                            (change)="onChangeGiro($event.target.value)">
+                            <option value="" hidden selected>Selecciona</option>
+                            <option *ngFor="let item of GirosList" [ngValue]="item.Uuid">
+                                {{item.TxtName}}
+                            </option>
+                        </select>    
+                        <div *ngIf="formQuotation.get('giro').invalid && (formQuotation.get('giro').dirty || formQuotation.get('giro').touched)"
+                            class="error-alert">
+    
+                            <div *ngIf="formQuotation.get('giro').errors.required">
+                                El giro es requerido
+                            </div>
+                        </div>
+                        <i class="material-icons dp48">arrow_drop_down</i>
+                    </div>
+                </div>    
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-9 form-custom" [ngClass]="{'error-alert': formQuotation.get('activity').errors &&
+    (formQuotation.get('activity').touched || formQuotation.get('activity').dirty) }">
+            <div class="form-group">
+                <label for="activity">ACTIVIDAD</label>
+                <input type="text" id="activity" formControlName="activity" value="" class="form-control">
+                <span *ngIf="formQuotation.get('activity').errors &&
+        (formQuotation.get('activity').touched || formQuotation.get('activity').dirty)">
+                    La actividad es requerida
+                </span>
+            </div>    
+        </div>
+        <div  *ngIf="isShowGiroOther" class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('giroOther').errors &&
+        (formQuotation.get('giroOther').touched || formQuotation.get('giroOther').dirty) }">
+            <div *ngIf="isShowGiroOther" class="form-group">
+                <label for="giro">Describe otro</label>
+                <input type="text" id="giroOther" formControlName="giroOther" value="" class="form-control">
+                <span *ngIf="formQuotation.get('giroOther').errors &&
+                (formQuotation.get('giroOther').touched || formQuotation.get('giroOther').dirty)">
+                    Otro es requerido
+                </span>
+            </div>
+        </div>    
+    </div>     
+    <div class="row">
+        <div class="col-9 form-custom" [ngClass]="{'error-alert': formQuotation.get('customerName').errors &&
+     (formQuotation.get('customerName').touched || formQuotation.get('customerName').dirty) }">
+            <div class="form-group">
+                <label for="customerName">NOMBRE O RAZON SOCIAL</label>
+                <input type="text" id="customerName" formControlName="customerName" value="" class="form-control">
+                <span *ngIf="formQuotation.get('customerName').errors &&
+        (formQuotation.get('customerName').touched || formQuotation.get('customerName').dirty)">
+                    El nombre del prospecto es requerido
+                </span>
+            </div>
+        </div>
+        <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('subRamo').errors &&
+        (formQuotation.get('subRamo').touched || formQuotation.get('subRamo').dirty) }">
+            <div class="form-group">
+                <label for="subRamo">SUBRAMO</label>
+                <div class="select-upper">
+                    <select id="subRamo" class="form-control" formControlName="subRamo" required
+                        (change)="onChangeSubRamo($event.target.value)">
+                        <option value="" hidden selected>Selecciona</option>
+                        <option *ngFor="let item of SubRamoList" [ngValue]="item.Uuid">
+                            {{item.TxtName}}
+                        </option>
+                    </select>    
+                    <div *ngIf="formQuotation.get('subRamo').invalid && (formQuotation.get('subRamo').dirty || formQuotation.get('subRamo').touched)"
+                        class="error-alert">
+                        <div *ngIf="formQuotation.get('subRamo').errors.required">
+                            El SubRamo es requerido
+                        </div>
+                    </div>
+                    <i class="material-icons dp48">arrow_drop_down</i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 form-custom" [ngClass]="{'error-alert': formQuotation.get('rfc').errors &&
+        (formQuotation.get('rfc').touched || formQuotation.get('rfc').dirty) }">
+            <div class="form-group">
+                <label for="rfc">RFC</label>
+                <input type="text" id="rfc" formControlName="rfc" value="" class="form-control">
+                <div *ngIf="formQuotation.get('rfc').errors && (formQuotation.get('rfc').dirty || formQuotation.get('rfc').touched)"
+                    class="error-alert">
+                    <div *ngIf="formQuotation.get('rfc').errors.rfcTaken ">
+                        El RFC no es correcto
+                    </div>
+                    <div *ngIf="formQuotation.get('rfc').errors.required">
+                        El RFC es requerido
+                    </div>
+                    <div *ngIf="formQuotation.get('rfc').errors.maxlength">
+                        El RFC no debe exceder los 13 caracteres
+                    </div>
+                    <div *ngIf="formQuotation.get('rfc').errors.pattern">
+                        El formato de RFC es incorrecto
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div class="col-3 form-custom"></div>
+        <div  *ngIf="isShowSubRamoOther" class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('subRamoOther').errors &&
+        (formQuotation.get('subRamoOther').touched || formQuotation.get('subRamoOther').dirty) }">
+            <div *ngIf="isShowSubRamoOther" class="form-group">
+                <label for="subRamoOther">Describe otro Subramo</label>
+                <input type="text" id="subRamoOther" formControlName="subRamoOther" value="" class="form-control">
+                <span *ngIf="formQuotation.get('subRamoOther').errors &&
+                (formQuotation.get('subRamoOther').touched || formQuotation.get('subRamoOther').dirty)">
+                    Otro es requerido
+                </span>
+            </div>
+        </div>
+    </div>   
+    <div class="row">
+        <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('startDate').errors &&
+            (formQuotation.get('startDate').touched || formQuotation.get('startDate').dirty) }">
+           <div class="form-group">     
+               <label for="startDate">INICIO DE VIGENCIA</label>                                 
+               <mat-form-field>
+                   <div class="row"></div>
+                   <input [ngClass]="" id="startDate" 
+                   readonly matInput formControlName="startDate"
+                       [satDatepicker]="picker3" value="" required style=" width: 100% !important; border-bottom: black; padding-top: 2px;" > 
+                   <sat-datepicker  #picker3 >      
+                   </sat-datepicker>
+                   <sat-datepicker-toggle matSuffix [for]="picker3"></sat-datepicker-toggle>              
+               </mat-form-field>
+               <span *ngIf="formQuotation.get('startDate').errors &&
+               (formQuotation.get('startDate').touched || formQuotation.get('startDate').dirty)">
+                   La fecha de fin es requerida
+               </span>  
+           </div>      
+        </div>
+       
+            <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('endDate').errors &&
+                (formQuotation.get('endDate').touched || formQuotation.get('endDate').dirty) }">
+              <div class="form-group">     
+                  <label for="startDate">FIN DE VIGENCIA</label>                                
+                    <mat-form-field>
+                        <div class="row"></div>
+                        <input [ngClass]="" id="endDate" 
+                        readonly matInput formControlName="endDate"
+                            [satDatepicker]="picker" value="" required style=" width: 100% !important; 
+                            border-bottom: black; padding-top: 2px;" > 
+                        <sat-datepicker  #picker>      
+                        </sat-datepicker>
+                        <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>              
+                    </mat-form-field>
+                    <span *ngIf="formQuotation.get('endDate').errors &&
+                    (formQuotation.get('endDate').touched || formQuotation.get('endDate').dirty)">
+                        La fecha de fin es requerida
+                    </span>  
+                </div>            
+            </div>
+        
+      
+            <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('giro').errors &&
+                (formQuotation.get('giro').touched || formQuotation.get('giro').dirty) }">
+                    <div class="col-12 form-group">    
+                        <label for="zona">ZONA</label>    
+                    <div class="select-upper">    
+                    <select id="zona" class="form-control" formControlName="zona" required
+                        (change)="onChangeZona($event.target.value)">
+                        <option value="" hidden selected>Dato</option>
+                        <option *ngFor="let item of ZonaList" [ngValue]="item.Uuid">
+                            {{item.TxtName}}
+                        </option>
+                    </select>    
+                    <div *ngIf="formQuotation.get('zona').invalid && (formQuotation.get('zona').dirty || formQuotation.get('zona').touched)"
+                        class="error-alert">
+                        <div *ngIf="formQuotation.get('zona').errors.required">
+                            La zona es requerida
+                        </div>
+                    </div>
+                    <i class="material-icons dp48">arrow_drop_down</i>
+                    </div>
+                </div>    
+            </div>
+            
+    </div>
+<div class="row">    
+            <div class="col-3 form-custom">
+                <div class="form-group">     
+                    <label for="">APLICA POOL INTERNACIONAL</label>                                    
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        
+                <mat-checkbox (change)="setAppearAplicaPool($event.checked)"   class="example-margin"
+                formControlName="isAplicaPool">
+                </mat-checkbox>
+                </div>  
+            </div>
+            <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('conquien').errors &&
+                            (formQuotation.get('conquien').touched || formQuotation.get('conquien').dirty) }">
+                <div class="form-group">    
+                    <div *ngIf="isAplicaPoolShow">
+                        <label for="conquien">¿CON QUIEN?</label>    
+                        <div class="select-upper">    
+                            <select id="conquien" class="form-control" formControlName="conquien" required
+                                (change)="onChangeConquien($event.target.value)">
+                                <option value="" hidden selected>Dato</option>
+                                <option *ngFor="let item of ConquienList" [ngValue]="item.Uuid">
+                                    {{item.TxtName}}
+                                </option>
+                            </select>    
+                            <div *ngIf="formQuotation.get('conquien').invalid && (formQuotation.get('conquien').dirty || formQuotation.get('conquien').touched)"
+                                class="error-alert">
+                                <div *ngIf="formQuotation.get('conquien').errors.required">
+                                    El conquien es requerido
+                                </div>
+                            </div>
+                            <i class="material-icons dp48">arrow_drop_down</i>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+            <div class="col-3 form-custom" [ngClass]="{'error-alert': formQuotation.get('tipoadministracion').errors &&
+            (formQuotation.get('tipoadministracion').touched || formQuotation.get('tipoadministracion').dirty) }">
+            <div class="form-group">    
+                <label for="tipoadministracion">TIPO DE ADMINISTRACION</label>    
+                <div class="select-upper">    
+                    <select id="tipoadministracion" class="form-control" formControlName="tipoadministracion" required
+                        (change)="onChangeTipoadministracion($event.target.value)">
+                        <option value="" hidden selected>Dato</option>
+                        <option *ngFor="let item of TipoAdministracionList" [ngValue]="item.Uuid">
+                            {{item.TxtName}}
+                        </option>
+                    </select>    
+                    <div *ngIf="formQuotation.get('tipoadministracion').invalid && (formQuotation.get('tipoadministracion').dirty || formQuotation.get('tipoadministracion').touched)"
+                        class="error-alert">
+    
+                        <div *ngIf="formQuotation.get('tipoadministracion').errors.required">
+                            El tipo de administración es requerido
+                        </div>
+                    </div>
+                    <i class="material-icons dp48">arrow_drop_down</i>
+                </div>
+            </div>    
+        </div>
+        </div>
+
+    <!-- ----------------------------------------------------------------------->   
+    <div class="row">
+        <div class="col-3 form-custom">
+            <div class="form-group">     
+                <label for="">NEGOCIO ACTUALMENTE ASEGURADO</label>                                    
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       
+                <mat-checkbox (change)="setAppearCompanyInssured($event.checked)" class="example-margin" 
+                    formControlName="isCompanyInssured">
+                </mat-checkbox>
+            </div>      
+        </div>   
+        <div>
+            <div *ngIf="isCompanyInssuredShow">    
+                <div class="condiciones">
+                  <a href="#">Condiciones</a>
+                </div>
+                    <div class="condicion">                
+                    </div>
+            </div>
+        </div>       
+    </div> 
+    <div *ngIf="isCompanyInssuredShow">  
+        <div class="row ">
+            <div class="form-custom">
+                <div class="form-group">
+                    &nbsp;&nbsp;
+                    <label for="">FORMA DE PAGO/EQUEMA DE FINANCIAMIENTO(ACTUAL)</label>                                                                                    
+                </div>
+            </div>       
+            <div class="col-6 form-custom" [ngClass]="{'error-alert': formQuotation.get('esquemafinanciamiento').errors &&
+            (formQuotation.get('esquemafinanciamiento').touched || formQuotation.get('esquemafinanciamiento').dirty) }">   
+                <div class="col-6 form-group">
+                    <label for="group"></label>
+                    <input type="text" id="group" formControlName="group" value="" class="form-control">
+                    <span *ngIf="formQuotation.get('esquemafinanciamiento').errors &&
+                        (formQuotation.get('esquemafinanciamiento').touched || formQuotation.get('esquemafinanciamiento').dirty)">
+                        El pago o financiamiento es requerido
+                    </span>
+                </div>                                                
+            </div>
+        </div>   
+        <div class="row">
+            <div class="col-6">                   
+                <div class="col-12 ">                        
+                    <div class="row">
+                        <div class="form-group form-custom col-6">
+                            <label for="broker">CORREDOR</label>
+                            <div class="select-upper">
+                                <select id="broker" class="form-control" formControlName="broker" required>
+                                    <option value="" hidden selected>Selecciona</option>
+                                    <option *ngFor="let item of BrokersList" [ngValue]="item.Uuid">
+                                        {{item.TxtName}}
+                                    </option>
+                                </select>
+                                <div *ngIf="formQuotation.get('broker').invalid && (formQuotation.get('broker').dirty || formQuotation.get('broker').touched)"
+                                    class="error-alert">
+                                    <div *ngIf="formQuotation.get('broker').errors.required">
+                                        El corredor es requerido
+                                    </div>
+                                </div>
+                                <i class="material-icons dp48">arrow_drop_down</i>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+            <div class="col-6"></div>
+        </div>    
+        <div class="row">
+        <div class="col-6">                   
+            <div class="col-12 ">
+                <div class="row">   
+                    <!--  <div *ngIf="isCompanyInssuredShow">  AQUI -->        
+                    <div class="form-group form-custom col-6">
+                        <label for="insuranceCompany">ASEGURADORA</label>
+                        <div class="select-upper">
+                            <select id="insuranceCompany" (change)="setAppearOtherAseguradora($event.checked)" class="form-control" formControlName="insuranceCompany" required>
+                                <option value="" hidden selected>Selecciona</option>
+                                <option *ngFor="let item of InsuranceList" [ngValue]="item.Uuid">
+                                    {{item.TxtName}}
+                                </option>
+                            </select>
+                            <div *ngIf="formQuotation.get('insuranceCompany').invalid && (formQuotation.get('insuranceCompany').dirty || formQuotation.get('insuranceCompany').touched)"
+                                class="error-alert">
+                                <div *ngIf="formQuotation.get('insuranceCompany').errors.required">
+                                    La compañia aseguradora es requerida
+                                </div>
+                            </div>
+                            <i class="material-icons dp48">arrow_drop_down</i>
+                        </div>
+                    </div>
+                    <div *ngIf="isAseguradoraShow" class="form-group form-custom">
+                        <label  for="insuranceCompanyOther">OTRA</label>
+                        <input type="text" id="insuranceCompanyOther" formControlName="insuranceCompanyOther" value=""
+                            class="form-control" >
+                        <span class="error-alert" *ngIf="formQuotation.get('insuranceCompanyOther').errors &&
+                        (formQuotation.get('insuranceCompanyOther').touched || formQuotation.get('insuranceCompanyOther').dirty)">
+                            Otra es requerido
+                        </span>
+                    </div>                
+                    <div class="col-6">
+                        <div class="form-custom">          
+                            <label for="">¿Esta dentro de pool?*</label>                                    
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        
+                                <mat-checkbox    class="example-margin"
+                                formControlName="isDentroPool">
+                                <!--(change)="setAppearDentroPool($event.checked)"-->
+                            </mat-checkbox>
+                        </div>                           
+                    </div>
+                </div>   
+            </div>
+        </div>    
+    </div>          
+        <div class="col-6">
+            <div class="form-custom">                      
+            </div>               
+        </div>
+    </div>            
+    <br><br><br><br>
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+            <div class="col-6">
+                <div class="row">   
+                    <div class="col-12 form-custom">
+                        <div class="form-group">     
+                            <label for="">PAGO DE COMPLEMENTOS</label>                                    
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        
+                        <mat-checkbox (change)="setAppearComplementos($event.checked)"   class="example-margin"
+                        formControlName="isComplementos">
+                        </mat-checkbox>
+                        </div>
+                    </div>
+                </div>    
+                <div *ngIf="isComplementosShow">  
+                <div class="row">
+                <div class="col-2">
+                    <div class="row">
+                        <div class="form-custom">
+                            <div class="form-group">
+                                <div class="form-group">     
+                                <label for="">SINIESTRALIDAD</label>  
+                            </div>
+                            </div>
+                        </div>   
+                    </div> 
+                </div>   
+                </div>  
+                <div class="row">
+                   &nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="form-custom">
+                                <div class="form-group">
+                                    <label for="">MONTO DE SINIESTROS</label>  
+                                </div>
+                            </div>                         
+                </div>
+                <br><br>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="form-custom">
+                                <div class="form-group">                                    
+                                    <label for="">CONSIDERA ALGUNO DE ESTOS PADECIMIENTOS</label>                                  
+                                </div>
+                            </div>                          
+                </div>
+            </div>
+        </div>             
+            <div class="col-6">
+                <div *ngIf="isComplementosShow">  
+                    <br><br><br><br>
+                    <div class="row">    
+                            <div class="row">
+                                <div class="col-12 form-custom">
+                                    <div class=""
+                                        [ngClass]="{'error-alert': formQuotation.get('desde').errors &&
+                                            (formQuotation.get('desde').touched || formQuotation.get('desde').dirty) }">
+                                            <div class="">     
+                                                <label for="desde">DESDE</label> &nbsp;&nbsp;                             
+                                                <mat-form-field>
+                                                    <input [ngClass]="" id="desde" 
+                                                    readonly matInput formControlName="desde"
+                                                        [satDatepicker]="picker3" value="" required
+                                                        style="width: 100% !important; border-bottom: black; padding-top: 2px;" > 
+                                                    <sat-datepicker  #picker3 >      
+                                                    </sat-datepicker>
+                                                    <sat-datepicker-toggle matSuffix [for]="picker3"></sat-datepicker-toggle>              
+                                                </mat-form-field>
+                                            </div>
+                                    </div> 
+                                </div>
+                                </div> 
+                            <div class="row">   
+                                <div class="col-12 form-custom">
+                                        <div class="">
+                                        <div class="form-custom" [ngClass]="{'error-alert': formQuotation.get('hasta').errors &&
+                                        (formQuotation.get('hasta').touched || formQuotation.get('hasta').dirty) }">
+                                        <div class="">     
+                                            <label for="hasta">HASTA</label>  &nbsp;&nbsp;                               
+                                            <mat-form-field>                            
+                                                <input [ngClass]="" id="hasta" 
+                                                readonly matInput formControlName="hasta"
+                                                    [satDatepicker]="picker" value="" required style=" width: 100% !important; border-bottom: black; padding-top: 2px;" > 
+                                                <sat-datepicker  #picker >      
+                                                </sat-datepicker>
+                                                <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>              
+                                            </mat-form-field>  
+                                            </div>                    
+                                        </div>
+                                        </div>                       
+                                    </div>                  
+                                </div>                               
+                    </div>
+                    <br><br><br>
+                    <div class="row">
+                        <div class="col-12">    
+                            <div class="row">
+                                <div class="col-12 form-custom">
+                                    <div class="col-12"
+                                        [ngClass]="{'error-alert': formQuotation.get('montosiniestro').errors &&
+                                            (formQuotation.get('montosiniestro').touched || formQuotation.get('montosiniestro').dirty) }">
+                                            <div class="col-12 form-custom" [ngClass]="{'error-alert': formQuotation.get('montosiniestro').errors &&
+                                            (formQuotation.get('montosiniestro').touched || formQuotation.get('montosiniestro').dirty) }">
+                                                    <div class="form-group col-12">
+                                                        
+                                                        <input type="text" id="group" formControlName="montosiniestro" value="" class="form-control">
+                                                        <span *ngIf="formQuotation.get('montosiniestro').errors &&
+                                                        (formQuotation.get('montosiniestro').touched || formQuotation.get('montosiniestro').dirty)">
+                                                            El monto es requerido
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                    </div>   
+                                    <div class="">                                    
+                                    </div>                       
+                                </div>  
+                            </div>    
+                        </div> 
+                    </div>
+                    <div class="row">                        
+                                &nbsp;&nbsp;
+                                <div class="form-custom">
+                                    <div class="col-11 form-custom" [ngClass]="{'error-alert': 
+                                    formQuotation.get('padecimientos').errors &&
+                                    (formQuotation.get('padecimientos').touched || formQuotation.get('padecimientos').dirty) }">
+                                    <div class="">                                             
+                                        <div class="select-upper">    
+                                            <select id="padecimientos" class="form-control" formControlName="padecimientos" required
+                                                (change)="onChangePadecimientos($event.target.value)">
+                                                <option value="" hidden selected>Dato</option>
+                                                <option *ngFor="let item of PadecimientosList" [ngValue]="item.Uuid">
+                                                    {{item.TxtName}}
+                                                </option>
+                                            </select>    
+                                            <div *ngIf="formQuotation.get('padecimientos').invalid && 
+                                            (formQuotation.get('padecimientos').dirty || formQuotation.get('padecimientos').touched)"
+                                                class="error-alert">                        
+                                                <div *ngIf="formQuotation.get('padecimientos').errors.required">
+                                                    Padecimientos es requerido
+                                                </div>
+                                            </div>
+                                            <i class="material-icons dp48">arrow_drop_down</i>
+                                        </div>
+                                    </div>    
+                                    </div>                      
+                                </div>                                                       
+                    </div>
+                </div>            
+            </div> 
+        </div>
+        </div>
+        <!-- ok --><!-- ok -->
+        <div class="col-6">
+            <div class="row">
+                <div class="col-3 form-custom"></div>
+                <div class="col-9 form-custom">                    
+                    <br>
+                    <br>
+                    <hr style="border:30px; height: 10px; width: 70%;">                        
+                    <br>
+                    <div class="row">
+                        <div class="col-4">                          
+                                    <div class="d-flex justify-content-start">          
+                                            <div class="form-custom">                                  
+                                                <label for="">Carga de Layout</label>                                    
+                                            </div>
+                                    </div>                                        
+                        </div>                                  
+                                    <div class="col-2">                            
+                                        <div class="d-flex justify-content-start">       
+                                            <div class="form-custom">    
+                                                <mat-checkbox class="example-margin" formControlName="isLayout"
+                                                    >
+                                                </mat-checkbox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">                          
+                                        <div class="d-flex justify-content-start">          
+                                                <div class="form-custom">                                  
+                                                    <label for="">¿Eres cliente de Lockton?</label>                                    
+                                                </div>
+                                        </div>                                            
+                                    </div>            
+                                        <div class="col-2">                            
+                                            <div class="d-flex justify-content-start">       
+                                                <div class="form-custom">    
+                                                    <mat-checkbox class="example-margin" formControlName="isLayout"
+                                                        >
+                                                    </mat-checkbox>
+                                                </div>
+                                            </div>
+                                        </div>                                     
+                    </div>
+                <br>              
+                <div class="img-exce">
+                        <a href="index.html">
+                            <img src="assets/images/excel.png" style=" height: 40px;
+                            width: 50;" alt="">
+                        </a>
+                    </div>
+                <br>   
+                    <div class="row">                                                
+                         <div class="col-6 form-custom" [ngClass]="{'error-alert': formQuotation.get('activity').errors &&
+                        (formQuotation.get('activity').touched || formQuotation.get('activity').dirty) }">                    
+                                <div class="form-group">
+                                    <label for="activity">Empleados:</label>
+                                    <input type="text" id="empleados" formControlName="empleados" value="" class="form-control">
+                                    <span *ngIf="formQuotation.get('activity').errors &&
+                            (formQuotation.get('activity').touched || formQuotation.get('activity').dirty)">
+                                        Empleados es requerida
+                                    </span>
+                                </div>
+                            </div>                            
+                            <div class="col-6">
+                                <button class="btn btn-custom btn-block">VER POBLACION</button>
+                            </div>
+                        </div>         
+                 </div>
+            </div>     
+        </div>
+          <!-- ok --><!-- ok -->
+    </div>    
+
+
+<div class="row">
+    <div class="col-12">
+        <hr>
+    </div>
+</div>    
+    <div class="row marT50 marB50">
+        <div class="col-12">
+            <div class="text-right">
+                <div class="btn-inline text-right">
+                    <button (click)="onCancel()" class="btn btn-custom btn-gray">CANCELAR</button>
+                    <button type="submit" class="btn btn-custom">CONTINUAR</button>
+                </div>
+ 
+            </div>
+
+        </div>
+    </div>
+</form>

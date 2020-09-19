@@ -1,0 +1,32 @@
+
+<p>Peliculas Recomendadas</p>
+<div class="card highlight-card card-small">
+    <div class="text-center">Favorita : {{peli}}</div>
+</div>
+
+<div class="col-12">
+<div class="d-flex justify-content-center">    
+    <div class="d-flex justify-content-center">
+        <div>            
+                <div *ngFor="let pelicula of peliculas">
+                    <div class="">                                          
+                        <div class="text-center titulo">{{pelicula.title}}</div>
+                        <div class="align-self-center imagenx">    
+                            <div *ngIf="peli == pelicula.title;  ">                                                               
+                                <img src="{{pelicula.image}}" style="height:200px; width: 180px;"/>
+                            </div>
+                 </div>            
+                        <div class="text-center aniox"><span>{{pelicula.year}}</span></div>  
+                            <div class="text-center"><span>Leer mas</span></div> 
+                            <div class="col-12">
+                                <button class="btn success" (click)="seleccionar($event, pelicula)">Seleccionar favorita</button>
+                            </div>            
+                        <br>   
+                    </div>    
+                </div>            
+        </div>
+    </div>
+
+</div>
+
+        
